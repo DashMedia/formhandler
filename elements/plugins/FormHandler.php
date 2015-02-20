@@ -29,12 +29,12 @@ switch ($modx->event->name) {
 
                 $channel = $modx->getOption('formhandler.slack_channel',null);
                 
-                //setup a postmark client
-                $postmark_server_token = $modx->getOption('formhandler.slack_channel',null);
-                $postmark_client = new PostmarkClient($postmark_server_token);
+                //setup a email client
+                $postmark_server_token = $modx->getOption('formhandler.postmark_token',null);
 
-                //setup email client
-                $email_handler = new Email_Handler($modx->getOption('site_name'), $modx->getOption('site_url'));
+                $email_handler = new Email_Handler($modx->getOption('site_name'), $modx->getOption('site_url'), $postmark_server_token, $modx);
+
+
 
     			$form_processor = new Form_Processor($modx, $slack_client, $postmark_client, $email_handler);
 
