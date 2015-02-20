@@ -10,7 +10,6 @@
 // outlined here. See https://github.com/craftsmancoding/repoman/wiki/Conventions for more info
 $core_path = $modx->getOption('formhandler.core_path', null, MODX_CORE_PATH.'components/formhandler/');
 include_once $core_path .'vendor/autoload.php';
-
 switch ($modx->event->name) {
 
     case 'OnWebPageInit':
@@ -22,17 +21,33 @@ switch ($modx->event->name) {
     			include_once $core_path .'lib/CM_API.php';
     			include_once $core_path .'lib/Slack_Client.php';
 
-    			$form_processor = new Form_Processor($modx);
-    			
+                //setup a slack client
+                $bot_name = $modx->getOption('formhandler.slack_bot_name',null);
+                $channel = $modx->getOption('formhandler.slack_channel',null);
+                $slack_url = $modx->getOption('formhandler.slack_webhook_url',null);
+                $slack_client = new Slack_Client($bot_name, $channel,$slack_url);
+
+                $channel = $modx->getOption('formhandler.slack_channel',null);
+                
+                //setup a postmark client
+                $postmark_server_token = $modx->getOption('formhandler.slack_channel',null);
+                $postmark_client = new PostmarkClient($postmark_server_token);
+
+                //setup email client
+                $email_handler = new Email_Handler($modx->getOption('site_name'), $modx->getOption('site_url'));
+
+    			$form_processor = new Form_Processor($modx, $slack_client, $postmark_client, $email_handler);
+
+
     			if($form_processor->validate()){
     				//validation passed, continue to email/subscribe
     				//process inputs
     				$form_processor->process();
     			} else {
+                    echo "invalid input";
     				//validation failed, spit in slack
     				try{
     					//send slack notification of error
-    					$slack_client = new Slack_Client('modx-bot','#dev-ops','#D00000','https://hooks.slack.com/services/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');
     					$slack_client->setMessage('Form validation failed: '.
     						$modx->getOption('site_url'));
 

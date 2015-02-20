@@ -8,19 +8,20 @@ class Form_Processor{
     public $email_subject;
     private $is_xhr;
     private $validator;
+    private $slack_client;
+    private $email_handler;
+    private $postmark_client;
 
-    public function __construct($modx)
+    public function __construct($modx, $slack_client, $postmark_client, $email_handler)
     {
         $this->modx = $modx;
+        $this->slack_client = $slack_client;
+        $this->email_handler = $email_handler;
+        $this->postmark_client = $postmark_client;
         $this->fields = $_POST;
-        $this->subscription_option = null;  
+        $this->subscription_option = null;
         $this->from_id = 0;
-        $this->slack_client = new Slack_Client('modx-bot','#dev-ops','#D00000','https://hooks.slack.com/services/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');
-        $this->option_templates = explode(',',$this->modx->getOption('cm_subscription_templates'));
-        
-        //set domain name
-        preg_match('/\/\/(.*)\/$/', $this->modx->getOption('site_url'), $matches);
-        $this->domain_name = $matches[1];
+        $this->option_templates = explode(',',$this->modx->getOption('formhandler.subscription_templates'));
 
         //grab the 'from' page if it was passed in the fields
         if(!empty($this->fields['from_page'])){
@@ -32,7 +33,9 @@ class Form_Processor{
 
         $this->grab_system_settings(); //anything null, grab from system settings
     }
-    private function _DEBUG($val){
+
+    private function _DEBUG($val)
+    {
         if(!isset($val)){
             $val = $this;
         }
@@ -42,15 +45,16 @@ class Form_Processor{
         echo "</pre>";
         die;
     }
+
     private function grab_system_settings()
     {
-        $from_id = $this->modx->getOption('formhander.from_page', null, null);
-        $send_email = $this->modx->getOption('formhander.send_email', null, null);
-        $subscribe = $this->modx->getOption('formhander.subscribe', null, null);
-        $cm_api_key = $this->modx->getOption('formhander.cm_api_key', null, null);
-        $cm_list_id = $this->modx->getOption('formhander.cm_list_id', null, null);
-        $to_address = $this->modx->getOption('formhander.to_address', null, null);
-        $email_subject = $this->modx->getOption('formhander.email_subject', null, null);
+        $from_id = $this->modx->getOption('formhandler.from_page', null, null);
+        $send_email = $this->modx->getOption('formhandler.send_email', null, null);
+        $subscribe = $this->modx->getOption('formhandler.subscribe', null, null);
+        $cm_api_key = $this->modx->getOption('formhandler.cm_api_key', null, null);
+        $cm_list_id = $this->modx->getOption('formhandler.cm_list_id', null, null);
+        $to_address = $this->modx->getOption('formhandler.to_email', null, null);
+        $email_subject = $this->modx->getOption('formhandler.email_subject', null, null);
 
         if(is_null($this->from_id) && !is_null($from_id)){
             $this->from_id = $from_id;
@@ -72,7 +76,7 @@ class Form_Processor{
         }
         if(is_null($this->email_subject) && !is_null($email_subject)){
             $this->email_subject = $email_subject;
-        }        
+        }  
     }
 
     private function recursive_grab($id)
@@ -118,7 +122,7 @@ class Form_Processor{
 
             $subscribe  = $tempDoc->getTVValue('fh_subscribe');
             $send_email = $tempDoc->getTVValue('fh_send_email');
-            $to_address = $tempDoc->getTVValue('fh_to_address');
+            $to_address = $tempDoc->getTVValue('fh_to_email');
             $email_subject = $tempDoc->getTVValue('fh_email_subject');
 
             if(is_null($this->send_email) && !empty($send_email)){
@@ -142,13 +146,25 @@ class Form_Processor{
     public function process()
     {
         //will not reach here if there where any problems with variables unless there were no variables, check that they are set
-        if(is_array($this->fields)){
-
-            if($this->subscribe && !empty($this->fields['email_address'])){
-                $this->addSubscriber();
+        $obj = $this;
+        if(is_array($obj->fields)){
+            $obj->slack_client->setMessage('field snapshot');
+            $obj->slack_client->addAttachment('field values', array(
+                    'subscribe'=>$obj->subscribe,
+                    'email_address'=>$obj->fields['email_address'],
+                    'send_email'=>$obj->send_email
+                ));
+            $obj->slack_client->addAttachment('FIELDS',$obj->fields);
+            $obj->slack_client->send();
+            if($obj->subscribe && !empty($obj->fields['email_address'])){
+                $obj->addSubscriber();
+                $obj->slack_client->setMessage('adding subscriber');
+                $obj->slack_client->send();
             }
-            if($this->send_email){
-                $this->sendMail();
+            if($obj->send_email){
+                $obj->sendMail();
+                $obj->slack_client->setMessage('sending email');
+                $obj->slack_client->send();
             }
             //header('Location: '.$this->modx->makeUrl($this->modx->resource->get('id'),'','','full') );
         }
@@ -161,15 +177,18 @@ class Form_Processor{
         }
 
         if(is_null($this->email_subject)){
-            $this->email_subject = 'Form submission from '.$this->domain_name;
+            $this->email_subject = 'Form submission from '.$this->modx->getOption('site_url');
         }
         /////////////////////////
         //send postmark email
         /////////////////////////
-        
-
-        // $handle = new Email_Handler($this->modx->getOption('site_name'), $this->domain_name);
-        // $handle->sendMail($this->to_address,$this->email_subject, $this->fields);
+        $this->slack_client->setMessage('mail settings');
+        $this->slack_client->addAttachment('values',array(
+                'to_address'=>$this->to_address,
+                'email_subject'=>$this->email_subject
+            ));
+        $this->slack_client->send();
+        $this->email_handler->sendMail($this->to_address,$this->fields['email_address'],$this->email_subject, $this->fields);
     }
    
     private function addSubscriber()
@@ -198,7 +217,6 @@ class Form_Processor{
                 ));
             $this->slack_client->report_error('Error adding subscriber to Email Manager');
         }
-        
     }
 
     private function xhr()

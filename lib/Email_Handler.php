@@ -1,28 +1,63 @@
 <?php
 
+
 class Email_Handler
 {
+
 	private $site_name;
 	private $domain_name;
-	public function __construct($site_name, $domain_name)
+	private $postmark_server_token;
+	public function __construct($site_name, $site_url, $postmark_server_token, $modx)
 	{
 		$this->site_name = $site_name;
-		$this->domain_name = $domain_name;
+		preg_match('/\/\/(.*)\/$/', $site_url, $matches);
+		$this->domain_name = $matches[1];
+		$this->postmark_server_token = $postmark_server_token;
+		$this->modx = $modx;
 	}
 
-	function sendMail($formTo, $formSubject, $fields, $from = null)
+	private function generate_html($subject, $email_tpl, $field_tpl)
+	{
+		$obj = $this;
+		$fields_html = "";
+		foreach ($field as $key => $value) {
+			$fields_html .= $obj->field_html($key,$value,3,$field_tpl);
+		}
+		$return_html = $obj->modx->getChunk($email_tpl,
+			array(
+					'subject'=>$subject,
+					'fields'=>$fields_html
+				));
+	}
+
+	private function field_html($heading, $value, $heading_level, $field_tpl)
+	{
+		$obj = $this;
+		$return_html = "";
+		if(is_array($value)){
+			foreach ($value as $title => $field) {
+				$sub_heading_level = $heading_level - 1
+				$return_html .= $obj->field_html($title, $field, $sub_heading_level);
+			}
+		} else {
+			$return_html .= $obj->modx->getChunk($field_tpl,
+			 array(
+					'h_level'=>$heading_level,
+					'title'=>$heading,
+					'value'=>'<p>'.$value.'</p>'
+				));
+		}
+		return $return_html;
+	}
+
+	public function sendMail($formTo, $from, $formSubject, $fields)
 	{
 		if(is_null($from)){
 			$from = 'noreply@'.$this->domain_name;
 		}
-	     /*********************************************/
-	     /*                 MAIL CODE                 */
-	     /*********************************************/
 
-	      //set 'from' email address if set
-	      if(isset($fields['email_address']) && ($fields['email_address'] != "")){
-	        $from = $fields['email_address'];
-	      } 
+		$redered_html = $this->generate_content($formSubject, 'fh_html_email_template', 'fh_html_field_template');
+		$redered_text_only = $this->generate_content($formSubject, 'fh_text_email_template', 'fh_text_field_template');
 
 	      //create random mime boundary
 	      $mime_boundary= "Multipart_Boundary_x".md5(mt_rand())."x";

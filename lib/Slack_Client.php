@@ -8,11 +8,10 @@ class Slack_Client{
 	private $color;
 	private $pretext;
 
-	public function __construct($username, $channel, $color, $webHookUrl)
+	public function __construct($username, $channel, $webHookUrl)
 	{
 		$this->username = $username;
 		$this->channel = $channel;
-		$this->color = $color;
 		$this->webHookUrl = $webHookUrl;
 		$this->attachments = array();
 	}
@@ -79,24 +78,26 @@ class Slack_Client{
 
 	public function report_error($pretext,$modx)
 	{
-		$this->setMessage('Error report for: '.
+		$obj = $this;
+		$obj->setMessage('Error report for: '.
 			$modx->getOption('site_url'));
-		$this->pretext = $pretext;
+		$obj->pretext = $pretext;
 		if(!empty($_GET)){
-			$this->addAttachment('$_GET Contents',$_GET);
+			$obj->addAttachment('$_GET Contents',$_GET);
 		}
 		if(!empty($_POST)){
-			$this->addAttachment('$_POST Contents',$_POST);
+			$obj->addAttachment('$_POST Contents',$_POST);
 		}
 		if(!empty($_FILES)){
-			$this->addAttachment('$_FILES Contents',$_FILES);
+			$obj->addAttachment('$_FILES Contents',$_FILES);
 		}
-		$this->send();
+		$obj->send('#D00000');
 	}
 
-	public function send() //throws exception
+	public function send($color = '#333333') //throws exception
 	{
 		$obj = $this;
+		$obj->color = $color;
 		//send email/slack notification
 		$client = new GuzzleHttp\Client();
 	    $request = $client->createRequest('POST', $obj->webHookUrl);

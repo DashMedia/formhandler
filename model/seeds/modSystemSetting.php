@@ -62,6 +62,27 @@ return array(
 		'namespace' => 'formhandler',
 		'area' 		=> 'formhandler:postmark'
 	),
+	array(
+	    'key'  		=>     'formhandler.slack_bot_name',
+		'value'		=>     'modx-bot',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:slack'
+	),
+	array(
+	    'key'  		=>     'formhandler.slack_channel',
+		'value'		=>     '#dev-ops',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:slack'
+	),
+	array(
+	    'key'  		=>     'formhandler.slack_webhook_url',
+		'value'		=>     '',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:slack'
+	),
 
 );
 /*EOF*/
