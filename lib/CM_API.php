@@ -7,9 +7,9 @@ class CM_API{
 	private $list_id;
 	private $subscription_option;
 	private $custom_field_name;
-	private $custom_field_id;
+	// private $custom_field_id;
 	private $custom_field_obj;
-
+	private $custom_fields;
 	private $subscribers_connection;
 	private $lists_connection;
 
@@ -26,6 +26,7 @@ class CM_API{
 		$this->lists_connection = new CS_REST_Lists(
 				$list_id, array('api_key'=>$api_key)
 			);
+
 	}
 
 	public function subscribe($name, $email_address, $subscription_option = null, $subscription_field = "Subscriptions")
@@ -73,14 +74,14 @@ class CM_API{
 		}
 	}
 
-	private function init_custom_field()
+	private function init_custom_field($field, $value, $type)
 	{
-		if(!$this->custom_field_exists()){
-			$this->custom_field_id = 0;
+		if(!$this->custom_field_exists($field)){
+			// $this->custom_field_id = 0;
 			$result = $this->lists_connection->create_custom_field(array(
-				'FieldName' => $this->custom_field_name,
-				'DataType' => CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTMANY,
-				'Options' => array($this->subscription_option),
+				'FieldName' => $field,
+				'DataType' => $type,
+				'Options' => array($value),
 				'VisibleInPreferenceCenter' => true
 			));
 			if(!$result->was_successful()){
@@ -90,25 +91,34 @@ class CM_API{
 				//saves doing another request
 			}
 		}
+		if($type === CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTONE || $type === CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTMANY){
+			$this->init_field_option($field,$value);			
+		}
 	}
 
-	private function custom_field_exists()
+	private function custom_field_exists($field)
 	{
 		// $obj = $this;
+		$field_key = false;
 		$custom_fields = $this->lists_connection->get_custom_fields();
 		foreach ($custom_fields->response as $key => $value) {
-			if($value->FieldName == $this->custom_field_name){
-				$this->custom_field_key = $value->Key;
-				$this->custom_field_obj = $value;
+			if($value->FieldName == $field){
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private function init_field_option()
+	// private function get_custom_fields()
+	// {
+	// 	if(is_null($this->custom_fields)){
+	// 		$this->custom_fields = $this->lists_connection->get_custom_fields()->response;
+	// 	}
+	// }
+
+	private function init_field_option($field, $value)
 	{
-		if(!in_array($this->subscription_option, $this->custom_field_obj->FieldOptions)){ // check if the option needs to be created
+		if(!in_array($value, $this->custom_field_obj->FieldOptions)){ // check if the option needs to be created
 
 			$result = $this->lists_connection->update_field_options(
 				$this->custom_field_key,
@@ -122,6 +132,19 @@ class CM_API{
 		}
 	}
 
+	private function process_custom_fields()
+	{
+		$existing_custom_fields = $this->lists_connection->get_custom_fields()->response;
+		foreach($this->custom_fields as $key => $value){
+			// iterate through fields, making sure they exist, and that the value is a viable option.
+		}
+	}
+
+	public function add_custom_field_value($key, $value, $type = CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTONE)
+	{
+		$this->custom_fields[] = array($key, $value, $type);
+	}
+
 	private function get_subscriber()
 	{
 		$result = $this->subscribers_connection->get($this->email_address);
@@ -132,10 +155,3 @@ class CM_API{
 		}
 	}
 }
-
-$cm_api = new CM_API(
-	'2a51a50555c368b5f44161cac171614f5eb802a9d12e38ea', 
-	'f76ddf709095acb2947922b818796c9a'
-	);
-
-$cm_api->subscribe('John', 'aaa@dashmedia.com.au');

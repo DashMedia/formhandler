@@ -7,6 +7,7 @@ class Form_Processor{
     public $cm_list_id;
     public $email_subject;
     private $is_xhr;
+    private $two_step_complete_flag;
     private $validator;
     private $slack_client;
     private $email_handler;
@@ -162,12 +163,17 @@ class Form_Processor{
                 $obj->slack_client->send();
             }
             if($obj->send_email){
-                $obj->sendMail();
-                $obj->slack_client->setMessage('sending email');
-                $obj->slack_client->send();
+                // $obj->sendMail();
+                // $obj->slack_client->setMessage('sending email');
+                // $obj->slack_client->send();
             }
             //header('Location: '.$this->modx->makeUrl($this->modx->resource->get('id'),'','','full') );
         }
+    }
+
+    public function two_step_complete($is_complete)
+    {
+        $this->two_step_complete_flag = (bool) $is_complete;
     }
 
     private function sendMail()
