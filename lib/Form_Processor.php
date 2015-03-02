@@ -6,6 +6,7 @@ class Form_Processor{
     public $cm_api_key;
     public $cm_list_id;
     public $email_subject;
+    private $modx;
     private $is_xhr;
     private $two_step_complete_flag;
     private $validator;
@@ -21,7 +22,7 @@ class Form_Processor{
         $this->postmark_client = $postmark_client;
         $this->fields = $_POST;
         $this->subscription_option = null;
-        $this->from_id = 0;
+        $this->from_id = $this->modx->getOption('site_start'); //default
         $this->option_templates = explode(',',$this->modx->getOption('formhandler.subscription_templates'));
 
         //grab the 'from' page if it was passed in the fields
@@ -147,27 +148,20 @@ class Form_Processor{
     public function process()
     {
         //will not reach here if there where any problems with variables unless there were no variables, check that they are set
-        $obj = $this;
-        if(is_array($obj->fields)){
-            $obj->slack_client->setMessage('field snapshot');
-            $obj->slack_client->addAttachment('field values', array(
-                    'subscribe'=>$obj->subscribe,
-                    'email_address'=>$obj->fields['email_address'],
-                    'send_email'=>$obj->send_email
-                ));
-            $obj->slack_client->addAttachment('FIELDS',$obj->fields);
-            $obj->slack_client->send();
-            if($obj->subscribe && !empty($obj->fields['email_address'])){
-                $obj->addSubscriber();
-                $obj->slack_client->setMessage('adding subscriber');
-                $obj->slack_client->send();
+        if(is_array($this->fields) && $this->two_step_complete_flag !== false){
+
+            if($this->subscribe && !empty($this->fields['email_address'])){
+                $this->addSubscriber();
             }
-            if($obj->send_email){
-                // $obj->sendMail();
-                // $obj->slack_client->setMessage('sending email');
-                // $obj->slack_client->send();
+            if($this->send_email){
+                $this->sendMail();
             }
             //header('Location: '.$this->modx->makeUrl($this->modx->resource->get('id'),'','','full') );
+        }
+        if(is_array($this->fields) && $this->two_step_complete_flag === false){
+            if($this->subscribe && !empty($this->fields['email_address'])){
+                $this->addSubscriber();
+            }
         }
     }
 
@@ -188,13 +182,18 @@ class Form_Processor{
         /////////////////////////
         //send postmark email
         /////////////////////////
-        $this->slack_client->setMessage('mail settings');
-        $this->slack_client->addAttachment('values',array(
+        try {
+            $this->email_handler->sendMail($this->to_address,$this->email_subject, $this->fields);
+        } catch (Exception $e) {
+            $this->slack_client->addAttachment('Variables',array(
+                'Function'=>'sendMail',
+                'Message'=>$e->getMessage(),
                 'to_address'=>$this->to_address,
-                'email_subject'=>$this->email_subject
-            ));
-        $this->slack_client->send();
-        $this->email_handler->sendMail($this->to_address,$this->fields['email_address'],$this->email_subject, $this->fields);
+                'email_address'=>$this->fields['email_address'],
+                'subject'=>$this->email_subject
+                ));
+            $this->slack_client->report_error('Error adding subscriber to Email Manager', $this->modx);
+        }
     }
    
     private function addSubscriber()
@@ -202,16 +201,33 @@ class Form_Processor{
         $custEmail = $this->fields['email_address'];
         $custName = $this->fields['name'];
         $fieldOption = $this->subscription_option;
+        
         if(is_null($custName)){
             $custName = '';
         }
-        // Check that none of the required variables are null
         try {
             $cm_api = new CM_API(
                 $this->cm_api_key,
                 $this->cm_list_id
                 );
-            $cm_api->subscribe($custName, $custEmail, $fieldOption);
+
+            $this->store_variables_in_cm($cm_api);
+            
+            //if it's a two step form, set the custom field value
+            if(!is_null($this->two_step_complete_flag)){
+                $value = ($this->two_step_complete_flag? 'Complete' : 'Incomplete');
+                $cm_api->add_custom_field_value('Enquiry Status',$value,'MultiSelectOne');
+            }
+
+            // // add the subscription option if it isn't null
+            if(!is_null($fieldOption)){
+                $cm_api->add_custom_field_value(
+                    'Subscriptions',
+                    $fieldOption,
+                    'MultiSelectMany');
+            }
+
+            $cm_api->subscribe($custName, $custEmail);
         } catch (Exception $e){
             $this->slack_client->addAttachment('Variables',array(
                 'Function'=>'addSubscriber',
@@ -221,7 +237,24 @@ class Form_Processor{
                 'cm_list_id'=>$this->cm_list_id,
                 'cm_api_key'=>$this->cm_api_key
                 ));
-            $this->slack_client->report_error('Error adding subscriber to Email Manager');
+            $this->slack_client->report_error('Error adding subscriber to Email Manager',$this->modx);
+        }
+    }
+
+    private function store_variables_in_cm($cm_api)
+    {
+        $form_resource = $this->modx->getObject('modDocument',$this->from_id);
+        $variables_to_store = $form_resource->getTVValue('fh_cm_variables_to_store');//name of variable containing csv of variables to store in CM
+        $variables_to_store = explode(',',$variables_to_store);
+        if(is_array($variables_to_store)){
+            foreach ($variables_to_store as $key => $value) {
+                $value = str_replace(' ','_',$value); // replace space with underscore
+                if(!empty($this->fields[$value])){
+                    $cm_api->add_custom_field_value(
+                        $value,
+                        $this->fields[$value]);
+                }
+            }
         }
     }
 

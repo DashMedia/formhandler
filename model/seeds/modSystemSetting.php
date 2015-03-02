@@ -63,6 +63,13 @@ return array(
 		'area' 		=> 'formhandler:postmark'
 	),
 	array(
+	    'key'  		=>     'formhandler.postmark_sender',
+		'value'		=>     '',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:postmark'
+	),
+	array(
 	    'key'  		=>     'formhandler.slack_bot_name',
 		'value'		=>     'modx-bot',
 		'xtype'		=>     'textfield',

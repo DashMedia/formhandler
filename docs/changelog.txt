@@ -1,5 +1,5 @@
-Changelog for YourPackage
+Changelog for FormHandler
 
-YourPackage 1.0.0
+FormHandler 0.0.1-rc
 ---------------------------------
-Initial Version that I copied from https://github.com/craftsmancoding/repo-starter
+- Inital version

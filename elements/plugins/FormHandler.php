@@ -1,7 +1,7 @@
 <?php
 /**
  * @name FormHandler
- * @description This is an example plugin.  List the events it attaches to in the PluginEvents.
+ * @description $_POST['fh_2step'] must be set to '1' on the first step and '2' on the second step
  * @PluginEvents OnWebPageInit
  */
 
@@ -13,8 +13,8 @@ include_once $core_path .'vendor/autoload.php';
 switch ($modx->event->name) {
 
     case 'OnWebPageInit':
-    		// if(isset($_POST['formhander'])){		
-    		if(true){		//debugging, always run
+    		if(isset($_POST['formhander'])){		
+    		// if(true){		//debugging, always run
     			include_once $core_path .'lib/Form_Processor.php';
     			include_once $core_path .'lib/Email_Handler.php';
     			include_once $core_path .'lib/Field_Validator.php';
@@ -27,20 +27,22 @@ switch ($modx->event->name) {
                 $slack_url = $modx->getOption('formhandler.slack_webhook_url',null);
                 $channel = $modx->getOption('formhandler.slack_channel',null);
                 $postmark_server_token = $modx->getOption('formhandler.postmark_token',null);
+                $postmark_sender = $modx->getOption('formhandler.postmark_sender',null);
 
                 //setup clients
                 $slack_client = new Slack_Client($bot_name, $channel,$slack_url);
 
-                $email_handler = new Email_Handler($modx->getOption('site_name'), $modx->getOption('site_url'), $postmark_server_token, $modx);
+                $email_handler = new Email_Handler($modx->getOption('site_name'), $modx->getOption('site_url'), $postmark_sender, $postmark_server_token, $modx);
 
     			$form_processor = new Form_Processor($modx, $slack_client, $postmark_client, $email_handler);
 
-                if(isset($_POST['fh_2step']){
-                    if($_POST['fh_2step'] == 1){
-                        // value set to complete
+                if(isset($_POST['fh_2step'])){
+                    if($_POST['fh_2step'] == 2){
+                        // value set to step 2
                         $form_processor->two_step_complete(true);
-                    } else {
-                        // value set to incomplete
+                    }
+                    if($_POST['fh_2step'] == 1){
+                        // value set to step 1
                         $form_processor->two_step_complete(false);
                     }
                 }

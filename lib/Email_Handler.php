@@ -11,60 +11,61 @@ class Email_Handler
 	private $domain_name;
 	private $postmark_server_token;
 	private $postmark_client;
-	public function __construct($site_name, $site_url, $postmark_server_token, $modx)
+	public function __construct($site_name, $site_url, $postmark_sender, $postmark_server_token, $modx)
 	{
 		$this->site_name = $site_name;
 		preg_match('/\/\/(.*)\/$/', $site_url, $matches);
 		$this->domain_name = $matches[1];
+		$this->postmark_sender = $postmark_sender;
 		$this->postmark_server_token = $postmark_server_token;
 		$this->modx = $modx;
 		$this->postmark_client = new PostmarkClient($postmark_server_token);
 	}
 
-	private function generate_content($subject, $email_tpl, $field_tpl)
+	private function generate_content($subject, $email_tpl, $field_tpl, $fields)
 	{
-		$obj = $this;
-		$fields_html = "";
-		foreach ($field as $key => $value) {
-			$fields_html .= $obj->field_html($key,$value,3,$field_tpl);
+		$rendered_fields = "";
+		foreach ($fields as $key => $value) {
+			$rendered_fields .= $this->field_html($key,$value,3,$field_tpl);
 		}
-		$return_html = $obj->modx->getChunk($email_tpl,
+		$rendered_content = $this->modx->getChunk($email_tpl,
 			array(
 					'subject'=>$subject,
-					'fields'=>$fields_html
+					'fields'=>$rendered_fields
 				));
+		return $rendered_content;
 	}
 
 	private function field_html($heading, $value, $heading_level, $field_tpl)
 	{
-		$obj = $this;
 		$return_html = "";
 		if(is_array($value)){
 			foreach ($value as $title => $field) {
 				$sub_heading_level = $heading_level - 1;
-				$return_html .= $obj->field_html($title, $field, $sub_heading_level);
+				$return_html .= $this->field_html($title, $field, $sub_heading_level);
 			}
 		} else {
-			$return_html .= $obj->modx->getChunk($field_tpl,
+			$return_html = $this->modx->getChunk($field_tpl,
 			 array(
 					'h_level'=>$heading_level,
 					'title'=>$heading,
 					'value'=>'<p>'.$value.'</p>'
 				));
 		}
+		var_dump($return_html);
 		return $return_html;
 	}
 
-	public function sendMail($formTo, $from, $formSubject, $fields)
+	public function sendMail($formTo, $formSubject, $fields)
 	{
 		if(is_null($from)){
 			$from = 'noreply@'.$this->domain_name;
 		}
 
-		$rendered_html = $this->generate_content($formSubject, 'fh_html_email_template', 'fh_html_field_template');
-		$rendered_text_only = $this->generate_content($formSubject, 'fh_text_email_template', 'fh_text_field_template');
+		$rendered_html = $this->generate_content($formSubject, 'fh_html_email_tpl', 'fh_html_field_tpl', $fields);
+		$rendered_text_only = $this->generate_content($formSubject, 'fh_text_email_tpl', 'fh_text_field_tpl', $fields);
 
-		$this->postmark_client->sendEmail($from, $formTo, $formSubject, $rendered_html, $rendered_text_only);
+		$this->postmark_client->sendEmail($this->postmark_sender, $formTo, $formSubject, $rendered_html, $rendered_text_only);
 	}
 
 	function getFiles($mime_boundary)
