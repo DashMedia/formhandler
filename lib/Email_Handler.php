@@ -61,14 +61,31 @@ class Email_Handler
 		if(is_null($from)){
 			$from = 'noreply@'.$this->domain_name;
 		}
-
-		$rendered_html = $this->generate_content($formSubject, 'fh_html_email_tpl', 'fh_html_field_tpl', $fields);
-		$rendered_text_only = $this->generate_content($formSubject, 'fh_text_email_tpl', 'fh_text_field_tpl', $fields);
+		$this->cleanFields($fields);
+		$rendered_html = $this->generate_content($formSubject, 'fh_html_email_template', 'fh_html_field_template', $fields);
+		$rendered_text_only = $this->generate_content($formSubject, 'fh_text_email_template', 'fh_text_field_template', $fields);
 
 		$this->postmark_client->sendEmail($this->postmark_sender, $formTo, $formSubject, $rendered_html, $rendered_text_only);
 	}
 
-	function getFiles($mime_boundary)
+	private function cleanFields(&$fields)
+	{
+		unset($fields['formhandler']);
+		foreach ($fields as $key => $value) {
+			$pretty_key = ucwords(str_replace('_', ' ', $key));
+
+			if(is_array($value)){ // recursive if value is an array
+				$this->cleanFields($fields[$key]);
+			}
+
+			if($pretty_key !== $key){
+				$fields[$pretty_key] = $value;
+				unset($fields[$key]);
+			}
+		}
+	}
+
+	private function getFiles($mime_boundary)
 	{
 	  $returnVal = "";
 	  foreach ($_FILES as $fieldName => $file) {

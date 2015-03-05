@@ -13,7 +13,7 @@ include_once $core_path .'vendor/autoload.php';
 switch ($modx->event->name) {
 
     case 'OnWebPageInit':
-    		if(isset($_POST['formhander'])){		
+    		if(isset($_POST['formhandler'])){		
     		// if(true){		//debugging, always run
     			include_once $core_path .'lib/Form_Processor.php';
     			include_once $core_path .'lib/Email_Handler.php';

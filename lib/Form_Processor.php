@@ -192,7 +192,7 @@ class Form_Processor{
                 'email_address'=>$this->fields['email_address'],
                 'subject'=>$this->email_subject
                 ));
-            $this->slack_client->report_error('Error adding subscriber to Email Manager', $this->modx);
+            $this->slack_client->report_error('Error sending email', $this->modx);
         }
     }
    

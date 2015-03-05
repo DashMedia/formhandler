@@ -1,5 +1,18 @@
 Changelog for FormHandler
 
-FormHandler 0.0.1-rc
+FormHandler 0.1.3-beta
+---------------------------------
+- pretty up field name output in emails
+
+FormHandler 0.1.2-beta
+---------------------------------
+- typo fix for chunk names
+- typo fix for email send error report
+
+FormHandler 0.1.1-beta
+---------------------------------
+- typo fix in FormHandler.php plugin
+
+FormHandler 0.1.0-beta
 ---------------------------------
 - Inital version
