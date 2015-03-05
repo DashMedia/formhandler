@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.1.4-beta
+---------------------------------
+- redirect to self after submitting email to prevent reload issue
+
 FormHandler 0.1.3-beta
 ---------------------------------
 - pretty up field name output in emails
