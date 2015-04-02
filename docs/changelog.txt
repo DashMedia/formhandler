@@ -1,5 +1,13 @@
 Changelog for FormHandler
 
+FormHandler 0.1.7-beta
+---------------------------------
+- remove fh_2step before sending email
+
+FormHandler 0.1.6-beta
+---------------------------------
+- also recursivly check cm_list_id values on documents
+
 FormHandler 0.1.5-beta
 ---------------------------------
 - fix for array values such as checkbox groups

@@ -80,6 +80,7 @@ class Email_Handler
 	private function cleanFields(&$fields)
 	{
 		unset($fields['formhandler']);
+		unset($fields['fh_2step']);
 		foreach ($fields as $key => $value) {
 			$pretty_key = ucwords(str_replace('_', ' ', $key));
 

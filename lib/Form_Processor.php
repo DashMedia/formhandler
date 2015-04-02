@@ -126,6 +126,7 @@ class Form_Processor{
             $send_email = $tempDoc->getTVValue('fh_send_email');
             $to_address = $tempDoc->getTVValue('fh_to_email');
             $email_subject = $tempDoc->getTVValue('fh_email_subject');
+            $cm_list_id = $tempDoc->getTVValue('fh_cm_list_id');
 
             if(is_null($this->send_email) && !empty($send_email)){
                 $this->send_email = $send_email;
