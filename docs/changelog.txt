@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.1.5-beta
+---------------------------------
+- fix for array values such as checkbox groups
+
 FormHandler 0.1.4-beta
 ---------------------------------
 - redirect to self after submitting email to prevent reload issue

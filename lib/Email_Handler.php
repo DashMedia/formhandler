@@ -40,19 +40,28 @@ class Email_Handler
 	{
 		$return_html = "";
 		if(is_array($value)){
+			$nested_values = "";
+
 			foreach ($value as $title => $field) {
-				$sub_heading_level = $heading_level - 1;
-				$return_html .= $this->field_html($title, $field, $sub_heading_level);
+				$sub_heading_level = $heading_level + 1;
+				$nested_values .= $this->field_html($title, $field, $sub_heading_level, $field_tpl);
 			}
+
+			$return_html = $this->modx->getChunk($field_tpl,
+				array(
+					'h_level'=>$heading_level,
+					'title'=>$heading,
+					'value'=>$nested_values
+					));
+
 		} else {
 			$return_html = $this->modx->getChunk($field_tpl,
-			 array(
+				array(
 					'h_level'=>$heading_level,
 					'title'=>$heading,
 					'value'=>'<p>'.$value.'</p>'
-				));
+					));
 		}
-		var_dump($return_html);
 		return $return_html;
 	}
 
