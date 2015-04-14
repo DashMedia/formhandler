@@ -81,7 +81,8 @@ class Email_Handler
 	{
 		unset($fields['formhandler']);
 		unset($fields['fh_2step']);
-		foreach ($fields as $key => $value) {
+		$originalCopy = $fields;
+		foreach ($originalCopy as $key => $value) {
 			$pretty_key = ucwords(str_replace('_', ' ', $key));
 
 			if(is_array($value)){ // recursive if value is an array
@@ -89,8 +90,10 @@ class Email_Handler
 			}
 
 			if($pretty_key !== $key){
-				$fields[$pretty_key] = $value;
-				unset($fields[$key]);
+				$offset = array_search($key,array_keys($fields));
+				$fields = array_merge(array_slice($fields,0,$offset),array($pretty_key => $value),array_slice($fields,$offset+1));
+				// $fields[$pretty_key] = $value;
+				// unset($fields[$key]);
 			}
 		}
 	}

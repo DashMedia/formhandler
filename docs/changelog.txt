@@ -1,5 +1,13 @@
 Changelog for FormHandler
 
+FormHandler 0.1.9-beta
+---------------------------------
+- Fix to keep values in the same order as the original form when emailed
+
+FormHandler 0.1.8-beta
+---------------------------------
+- REVERT redirect to self after submitting email to prevent reload issue
+
 FormHandler 0.1.7-beta
 ---------------------------------
 - remove fh_2step before sending email
