@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.1.10-beta
+---------------------------------
+- Fix for ucwords on nested array
+
 FormHandler 0.1.9-beta
 ---------------------------------
 - Fix to keep values in the same order as the original form when emailed
