@@ -91,7 +91,7 @@ class Email_Handler
 
 			if($pretty_key !== $key){
 				$offset = array_search($key,array_keys($fields));
-				$fields = array_merge(array_slice($fields,0,$offset),array($pretty_key => $value),array_slice($fields,$offset+1));
+				$fields = array_merge(array_slice($fields,0,$offset),array($pretty_key => $fields[$key]),array_slice($fields,$offset+1));
 				// $fields[$pretty_key] = $value;
 				// unset($fields[$key]);
 			}
