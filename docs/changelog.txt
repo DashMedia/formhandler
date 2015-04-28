@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.1.11-beta
+---------------------------------
+- Do not output empty POST variables
+
 FormHandler 0.1.10-beta
 ---------------------------------
 - Fix for ucwords on nested array

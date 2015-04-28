@@ -39,6 +39,9 @@ class Email_Handler
 	private function field_html($heading, $value, $heading_level, $field_tpl)
 	{
 		$return_html = "";
+		if(empty($value)){ // return empty if value is blank
+			return "";
+		}
 		if(is_array($value)){
 			$nested_values = "";
 
