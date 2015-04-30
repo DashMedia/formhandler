@@ -44,3 +44,7 @@ $_lang['setting_formhandler.send_email_desc'] = '1 or 0';
 $_lang['setting_formhandler.to_email'] = 'Email address to send form submissions to';
 $_lang['setting_formhandler.email_subject'] = 'Subject for emails sent by the site';
 $_lang['setting_formhandler.postmark_token'] = 'Postmark Server Token';
+$_lang['setting_formhandler.html_email'] = 'HTML chunk to use as a wrapper for emails';
+$_lang['setting_formhandler.html_field'] = 'HTML chunk to use as a wrapper for each field';
+$_lang['setting_formhandler.text_email'] = 'Plain text chunk to use as a wrapper for emails';
+$_lang['setting_formhandler.text_field'] = 'Plain text chunk to use as a wrapper for each field';

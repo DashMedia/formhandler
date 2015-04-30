@@ -90,6 +90,34 @@ return array(
 		'namespace' => 'formhandler',
 		'area' 		=> 'formhandler:slack'
 	),
+	array(
+	    'key'  		=>     'formhandler.html_email',
+		'value'		=>     'fh_html_email_template',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:chunks'
+	),
+	array(
+	    'key'  		=>     'formhandler.html_field',
+		'value'		=>     'fh_html_field_template',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:chunks'
+	),
+	array(
+	    'key'  		=>     'formhandler.text_email',
+		'value'		=>     'fh_text_email_template',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:chunks'
+	),
+	array(
+	    'key'  		=>     'formhandler.text_field',
+		'value'		=>     'fh_text_field_template',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:chunks'
+	),
 
 );
 /*EOF*/

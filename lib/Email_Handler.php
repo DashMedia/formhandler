@@ -74,8 +74,14 @@ class Email_Handler
 			$from = 'noreply@'.$this->domain_name;
 		}
 		$this->cleanFields($fields);
-		$rendered_html = $this->generate_content($formSubject, 'fh_html_email_template', 'fh_html_field_template', $fields);
-		$rendered_text_only = $this->generate_content($formSubject, 'fh_text_email_template', 'fh_text_field_template', $fields);
+		//grab the name of the chunks to use as tpls
+		$html_email_tpl = $this->modx->getOption('formhandler.html_email', null, null);
+		$html_field_tpl = $this->modx->getOption('formhandler.html_field', null, null);
+		$text_email_tpl = $this->modx->getOption('formhandler.text_email', null, null);
+		$text_field_tpl = $this->modx->getOption('formhandler.text_field', null, null);
+
+		$rendered_html = $this->generate_content($formSubject, $html_email_tpl, $html_field_tpl, $fields);
+		$rendered_text_only = $this->generate_content($formSubject, $text_email_tpl, $text_field_tpl, $fields);
 
 		$this->postmark_client->sendEmail($this->postmark_sender, $formTo, $formSubject, $rendered_html, $rendered_text_only);
 	}

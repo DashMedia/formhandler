@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.1.12-beta
+---------------------------------
+- Add support for custom chunks for email templating (system setting level only)
+
 FormHandler 0.1.11-beta
 ---------------------------------
 - Do not output empty POST variables
