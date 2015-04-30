@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.1.13-beta
+---------------------------------
+- Redirect to GET request of action page fix
+
 FormHandler 0.1.12-beta
 ---------------------------------
 - Add support for custom chunks for email templating (system setting level only)

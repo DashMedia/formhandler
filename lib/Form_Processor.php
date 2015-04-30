@@ -157,7 +157,8 @@ class Form_Processor{
             if($this->send_email){
                 $this->sendMail();
             }
-            header('Location: '.$this->modx->makeUrl($this->modx->resource->get('id'),'','','full') ); // redirect to self to prevent reload issue
+
+            header('Location: /'.$_GET['q'] ); // redirect to self to prevent reload issue
             die;
         }
         if(is_array($this->fields) && $this->two_step_complete_flag === false){
