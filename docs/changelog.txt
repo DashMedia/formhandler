@@ -1,5 +1,10 @@
 Changelog for FormHandler
 
+FormHandler 0.1.14-beta
+---------------------------------
+- Fix for 0 values in TV's being ignored
+- Add a bunch of lexicon entries for system settings
+
 FormHandler 0.1.13-beta
 ---------------------------------
 - Redirect to GET request of action page fix
