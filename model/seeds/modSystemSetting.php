@@ -36,14 +36,14 @@ return array(
 	),
 	array(
 	    'key'  		=>     'formhandler.send_email',
-		'value'		=>     '',
+		'value'		=>     '0',
 		'xtype'		=>     'textfield',
 		'namespace' => 'formhandler',
 		'area' 		=> 'formhandler:email'
 	),
 	array(
 	    'key'  		=>     'formhandler.to_email',
-		'value'		=>     '',
+		'value'		=>     'jason@dashmedia.com.au',
 		'xtype'		=>     'textfield',
 		'namespace' => 'formhandler',
 		'area' 		=> 'formhandler:email'
@@ -78,7 +78,7 @@ return array(
 	),
 	array(
 	    'key'  		=>     'formhandler.slack_channel',
-		'value'		=>     '#dev-ops',
+		'value'		=>     '#error-logs',
 		'xtype'		=>     'textfield',
 		'namespace' => 'formhandler',
 		'area' 		=> 'formhandler:slack'
