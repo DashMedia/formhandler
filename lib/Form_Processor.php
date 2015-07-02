@@ -125,6 +125,7 @@ class Form_Processor{
             $subscribe  = $tempDoc->getTVValue('fh_subscribe');
             $send_email = $tempDoc->getTVValue('fh_send_email');
             $to_address = $tempDoc->getTVValue('fh_to_email');
+            $to_field = $tempDoc->getTVValue('fh_to_address_field');
             $email_subject = $tempDoc->getTVValue('fh_email_subject');
             $cm_list_id = $tempDoc->getTVValue('fh_cm_list_id');
 
@@ -142,6 +143,9 @@ class Form_Processor{
             }
             if(is_null($this->email_subject) && ($email_subject === '0' || $email_subject)){
                 $this->email_subject = $email_subject;
+            }
+            if(!empty($to_field) && !empty($this->fields[$to_field])){
+                $this->to_address = $this->fields[$to_field];
             }
         }
     }

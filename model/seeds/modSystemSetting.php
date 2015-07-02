@@ -56,6 +56,20 @@ return array(
 		'area' 		=> 'formhandler:email'
 	),
 	array(
+	    'key'  		=>     'formhandler.from_address',
+		'value'		=>     '',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:email'
+	),
+	array(
+	    'key'  		=>     'formhandler.from_name',
+		'value'		=>     '',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:email'
+	),
+	array(
 	    'key'  		=>     'formhandler.postmark_token',
 		'value'		=>     '',
 		'xtype'		=>     'textfield',

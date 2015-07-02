@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.2.0-beta
+---------------------------------
+- Add fallback to use modPHPMailer
+
 FormHandler 0.1.14-beta
 ---------------------------------
 - Fix for 0 values in TV's being ignored

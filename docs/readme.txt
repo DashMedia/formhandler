@@ -15,6 +15,11 @@ Storing Variables in CM
 
 Add the variables to the fh_cm_variables_to_store tv on the page which the from_page varible is pointing to. These values will be stored in CM as Text fields.
 
+Sending via Postmark
+-----------------------
+
+If Postmark server token is included mail will be sent via the Postmark API's instead of the MODX mailer service
+
 Author: Jason Carney <jason@dashmedia.com.au>
 Copyright 2015
 

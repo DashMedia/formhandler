@@ -10,7 +10,7 @@ class Email_Handler
 	private $site_name;
 	private $domain_name;
 	private $postmark_server_token;
-	private $postmark_client;
+	private $postmark_client; 
 	public function __construct($site_name, $site_url, $postmark_sender, $postmark_server_token, $modx)
 	{
 		$this->site_name = $site_name;
@@ -19,7 +19,10 @@ class Email_Handler
 		$this->postmark_sender = $postmark_sender;
 		$this->postmark_server_token = $postmark_server_token;
 		$this->modx = $modx;
-		$this->postmark_client = new PostmarkClient($postmark_server_token);
+		$this->postmark_client = null;
+		if(!empty($postmark_server_token)){
+			$this->postmark_client = new PostmarkClient($postmark_server_token);
+		}
 	}
 
 	private function generate_content($subject, $email_tpl, $field_tpl, $fields)
@@ -70,9 +73,7 @@ class Email_Handler
 
 	public function sendMail($formTo, $formSubject, $fields)
 	{
-		if(is_null($from)){
-			$from = 'noreply@'.$this->domain_name;
-		}
+		$from = 'noreply@'.$this->domain_name;
 		$this->cleanFields($fields);
 		//grab the name of the chunks to use as tpls
 		$html_email_tpl = $this->modx->getOption('formhandler.html_email', null, null);
@@ -83,7 +84,30 @@ class Email_Handler
 		$rendered_html = $this->generate_content($formSubject, $html_email_tpl, $html_field_tpl, $fields);
 		$rendered_text_only = $this->generate_content($formSubject, $text_email_tpl, $text_field_tpl, $fields);
 
-		$this->postmark_client->sendEmail($this->postmark_sender, $formTo, $formSubject, $rendered_html, $rendered_text_only);
+		if(!is_null($this->postmark_client)){ //send via postmark
+
+			$this->postmark_client->sendEmail($this->postmark_sender, $formTo, $formSubject, $rendered_html, $rendered_text_only);
+
+		} else { //send via modx mail
+
+			$this->modx->getService('mail', 'mail.modPHPMailer');
+			$from = $this->modx->getOption('formhandler.from_address', null, $from);
+			$from_name = $this->modx->getOption('formhandler.from_name', null, 'No Reply');
+
+			$mailer = $this->modx->mail;
+
+			$mailer->setHTML(true);
+			$mailer->set(modMail::MAIL_BODY, $rendered_html);
+			$mailer->set(modMail::MAIL_FROM, $from);
+			$mailer->set(modMail::MAIL_FROM_NAME, $from_name);
+			$mailer->set(modMail::MAIL_SENDER, $from);
+			$mailer->set(modMail::MAIL_SUBJECT, $formSubject);
+			$mailer->address('to', $formTo);
+			$mailer->address('reply-to', $from);
+			if (!$mailer->send()) {
+				throw new Exception("Mail not sent, error from mail.modPHPMailer");
+			}
+		}
 	}
 
 	private function cleanFields(&$fields)
