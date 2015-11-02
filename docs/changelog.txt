@@ -1,5 +1,45 @@
 Changelog for FormHandler
 
+FormHandler 0.2.10-beta
+---------------------------------
+- fix for adding values to multiselectmany boxes
+
+FormHandler 0.2.9-beta
+---------------------------------
+- fix for storing vars in cm
+
+FormHandler 0.2.8-beta
+---------------------------------
+- fresh build
+
+FormHandler 0.2.7-beta
+---------------------------------
+- remove debug code
+
+FormHandler 0.2.6-beta
+---------------------------------
+- empty string fix for cm_variables_to_store
+
+FormHandler 0.2.5-beta
+---------------------------------
+- Recursive value upgrade for cm_variables_to_store
+
+FormHandler 0.2.4-beta
+---------------------------------
+- Recursive value fix for session stoarage var
+
+FormHandler 0.2.3-beta
+---------------------------------
+- Add system setting for default session storage behaviour
+
+FormHandler 0.2.2-beta
+---------------------------------
+- Add option to store form submissions to SESSION data
+
+FormHandler 0.2.1-beta
+---------------------------------
+- Add OnFormHanderEmailRender system event
+ 
 FormHandler 0.2.0-beta
 ---------------------------------
 - Add fallback to use modPHPMailer

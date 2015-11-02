@@ -84,9 +84,17 @@ class Email_Handler
 		$rendered_html = $this->generate_content($formSubject, $html_email_tpl, $html_field_tpl, $fields);
 		$rendered_text_only = $this->generate_content($formSubject, $text_email_tpl, $text_field_tpl, $fields);
 
+		$this->fields = $fields;
+		$this->rendered_html = $rendered_html;
+		$this->rendered_text_only = $rendered_text_only;
+		$eh = $this;
+		$this->modx->invokeEvent('OnFormHanderEmailRender', array(
+			'email_handler'=> $eh
+			));
+
 		if(!is_null($this->postmark_client)){ //send via postmark
 
-			$this->postmark_client->sendEmail($this->postmark_sender, $formTo, $formSubject, $rendered_html, $rendered_text_only);
+			$this->postmark_client->sendEmail($this->postmark_sender, $formTo, $formSubject, $this->rendered_html, $this->rendered_text_only);
 
 		} else { //send via modx mail
 
@@ -97,7 +105,7 @@ class Email_Handler
 			$mailer = $this->modx->mail;
 
 			$mailer->setHTML(true);
-			$mailer->set(modMail::MAIL_BODY, $rendered_html);
+			$mailer->set(modMail::MAIL_BODY, $this->rendered_html);
 			$mailer->set(modMail::MAIL_FROM, $from);
 			$mailer->set(modMail::MAIL_FROM_NAME, $from_name);
 			$mailer->set(modMail::MAIL_SENDER, $from);

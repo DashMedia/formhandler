@@ -132,6 +132,13 @@ return array(
 		'namespace' => 'formhandler',
 		'area' 		=> 'formhandler:chunks'
 	),
+	array(
+	    'key'  		=>     'formhandler.store_in_session',
+		'value'		=>     '0',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:SESSIONS'
+	),
 
 );
 /*EOF*/

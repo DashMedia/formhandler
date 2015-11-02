@@ -9,6 +9,8 @@ class Form_Processor{
     private $modx;
     private $is_xhr;
     private $two_step_complete_flag;
+    private $store_in_session;
+    private $cm_variables_to_store;
     private $validator;
     private $slack_client;
     private $email_handler;
@@ -22,6 +24,8 @@ class Form_Processor{
         $this->postmark_client = $postmark_client;
         $this->fields = $_POST;
         $this->subscription_option = null;
+        $this->store_in_session = null;
+        $this->cm_variables_to_store = null;
         $this->from_id = $this->modx->getOption('site_start'); //default
         $this->option_templates = explode(',',$this->modx->getOption('formhandler.subscription_templates'));
 
@@ -34,6 +38,13 @@ class Form_Processor{
         $this->recursive_grab($this->from_id); //pull values from the 'from' page and it's ancestors
 
         $this->grab_system_settings(); //anything null, grab from system settings
+
+        if($this->store_in_session){
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['fh_data'] = $_POST;
+        }
     }
 
     private function _DEBUG($val)
@@ -57,6 +68,8 @@ class Form_Processor{
         $cm_list_id = $this->modx->getOption('formhandler.cm_list_id', null, null);
         $to_address = $this->modx->getOption('formhandler.to_email', null, null);
         $email_subject = $this->modx->getOption('formhandler.email_subject', null, null);
+        $store_in_session = $this->modx->getOption('formhandler.store_in_session', null, null);
+        $store_in_session = $this->modx->getOption('formhandler.cm_variables_to_store', null, null);
 
         if(is_null($this->from_id) && !is_null($from_id)){
             $this->from_id = $from_id;
@@ -78,6 +91,12 @@ class Form_Processor{
         }
         if(is_null($this->email_subject) && !is_null($email_subject)){
             $this->email_subject = $email_subject;
+        } 
+        if(is_null($this->store_in_session) && !is_null($store_in_session)){
+            $this->store_in_session = $store_in_session;
+        } 
+        if(is_null($this->cm_variables_to_store) && !is_null($cm_variables_to_store)){
+            $this->cm_variables_to_store = $cm_variables_to_store;
         }  
     }
 
@@ -128,6 +147,8 @@ class Form_Processor{
             $to_field = $tempDoc->getTVValue('fh_to_address_field');
             $email_subject = $tempDoc->getTVValue('fh_email_subject');
             $cm_list_id = $tempDoc->getTVValue('fh_cm_list_id');
+            $store_in_session = $tempDoc->getTVValue('fh_store_in_session');
+            $cm_variables_to_store = $tempDoc->getTVValue('fh_cm_variables_to_store');
 
             if(is_null($this->send_email) && ($send_email === '0' || $send_email)){
                 $this->send_email = $send_email;
@@ -146,6 +167,13 @@ class Form_Processor{
             }
             if(!empty($to_field) && !empty($this->fields[$to_field])){
                 $this->to_address = $this->fields[$to_field];
+            }
+            if(is_null($this->store_in_session) && ($store_in_session === '0' || $store_in_session)){
+                $this->store_in_session = $store_in_session;
+            }
+
+            if(empty($this->cm_variables_to_store) && !empty($cm_variables_to_store)){
+                $this->cm_variables_to_store = $cm_variables_to_store;
             }
         }
     }
@@ -231,7 +259,7 @@ class Form_Processor{
                 $cm_api->add_custom_field_value(
                     'Subscriptions',
                     $fieldOption,
-                    'MultiSelectMany');
+                    'MultiSelectMany', true);
             }
 
             $cm_api->subscribe($custName, $custEmail);
@@ -250,9 +278,7 @@ class Form_Processor{
 
     private function store_variables_in_cm($cm_api)
     {
-        $form_resource = $this->modx->getObject('modDocument',$this->from_id);
-        $variables_to_store = $form_resource->getTVValue('fh_cm_variables_to_store');//name of variable containing csv of variables to store in CM
-        $variables_to_store = explode(',',$variables_to_store);
+        $variables_to_store = explode(',',$this->cm_variables_to_store);
         if(is_array($variables_to_store)){
             foreach ($variables_to_store as $key => $value) {
                 $value = str_replace(' ','_',$value); // replace space with underscore

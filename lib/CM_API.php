@@ -131,10 +131,8 @@ class CM_API{
 
 		if(is_null($current_values) && is_null($this->custom_fields)){
 			//no custom field values to deal with
-			var_dump(false);
 			return false;
 		}
-
 		foreach($this->custom_fields as $key => &$value){
 			// iterate through fields, making sure they exist, and that the value is a viable option.
 			foreach ($existing_custom_fields as $fieldId => $field) {
@@ -173,7 +171,6 @@ class CM_API{
 
 				$value['Options'][] = $value['Value'];
 			}
-
 			// update the current values array with the new values
 			if($value['DataType'] != CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTMANY){ //check if field already has a value, and replace it
 				$found = false;
@@ -197,6 +194,7 @@ class CM_API{
 					);
 			}
 		}
+		$this->custom_fields = $current_values;
 		return true;
 	}
 	/*
@@ -210,7 +208,7 @@ class CM_API{
 	*   CS_REST_CUSTOM_FIELD_TYPE_COUNTRY = Country
 	*   
 	*/
-	public function add_custom_field_value($key, $value, $type = CS_REST_CUSTOM_FIELD_TYPE_TEXT)
+	public function add_custom_field_value($key, $value, $type = CS_REST_CUSTOM_FIELD_TYPE_TEXT, $add = false)
 	{
 		$this->custom_fields[] = array('FieldName' => $key, 'Value' => $value, 'DataType' => $type);
 	}
