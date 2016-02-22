@@ -67,64 +67,7 @@ class CM_API{
 		}
 	}
 
-	// private function init_custom_field($field, $value, $type)
-	// {
-	// 	if(!$this->custom_field_exists($field)){
-	// 		// $this->custom_field_id = 0;
-	// 		$result = $this->lists_connection->create_custom_field(array(
-	// 			'FieldName' => $field,
-	// 			'DataType' => $type,
-	// 			'Options' => array($value),
-	// 			'VisibleInPreferenceCenter' => true
-	// 		));
-	// 		if(!$result->was_successful()){
-	// 			throw new Exception('Unable to create required custom field');
-	// 		} else {
-	// 			$this->custom_field_obj = (object) array('FieldOptions'=>array($this->subscription_option));
-	// 			//saves doing another request
-	// 		}
-	// 	}
-	// 	if($type === CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTONE || $type === CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTMANY){
-	// 		$this->init_field_option($field,$value);			
-	// 	}
-	// }
-
-	// private function custom_field_exists($field)
-	// {
-	// 	// $obj = $this;
-	// 	$field_key = false;
-	// 	$custom_fields = $this->lists_connection->get_custom_fields();
-	// 	foreach ($custom_fields->response as $key => $value) {
-	// 		if($value->FieldName == $field){
-	// 			return true;
-	// 		}
-	// 	}
-	// 	return false;
-	// }
-
-	// private function get_custom_fields()
-	// {
-	// 	if(is_null($this->custom_fields)){
-	// 		$this->custom_fields = $this->lists_connection->get_custom_fields()->response;
-	// 	}
-	// }
-
-	// private function init_field_option($field, $value)
-	// {
-	// 	if(!in_array($value, $this->custom_field_obj->FieldOptions)){ // check if the option needs to be created
-
-	// 		$result = $this->lists_connection->update_field_options(
-	// 			$this->custom_field_key,
-	// 			array($this->subscription_option),
-	// 			true //keep existing options
-	// 			);
-
-	// 		if(!$result->was_successful()){
-	// 			throw new Exception('Unable to create new option for custom field');
-	// 		}
-	// 	}
-	// }
-
+	
 	public function process_custom_fields(&$current_values)
 	{
 		$existing_custom_fields = $this->lists_connection->get_custom_fields()->response;
@@ -141,6 +84,7 @@ class CM_API{
 					if(isset($field->FieldOptions)){
 						$value['Options'] = $field->FieldOptions;
 						$value['FieldOptions'] = &$value['Options'];
+						$value['DataType'] = $field->DataType;
 					}
 					break;
 				}
