@@ -39,6 +39,8 @@ class Form_Processor{
 
         $this->grab_system_settings(); //anything null, grab from system settings
 
+        $this->check_delivery_options();
+
         if($this->store_in_session){
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
@@ -121,6 +123,33 @@ class Form_Processor{
             } else {
                 return false;
             }
+        }
+    }
+
+    private function check_delivery_options()
+    {
+        if(!empty($this->fields['email_destination'])){ //we have a specified destination, grab options from migx and set value of delivery address
+
+            $tempDoc = $this->modx->getObject('modResource', $this->from_id);
+
+            $fieldsMIGX = json_decode($tempDoc->getTVValue('tvFields'));
+
+            $options = null;
+            foreach($fieldsMIGX as $field) {
+                if ($field->field_type === 'Email destination') {
+                    $options = json_decode($field->options);
+                    break;
+                }
+            }
+
+            $destination = $this->fields['email_destination'];
+            foreach($options as $option){
+                if($option->option === $destination){
+                    $this->to_address = $option->email;
+                    break;
+                }
+            }
+
         }
     }
 
