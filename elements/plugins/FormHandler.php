@@ -15,11 +15,11 @@ switch ($modx->event->name) {
     case 'OnWebPageInit':
     		if(isset($_POST['formhandler'])){		
     		// if(true){		//debugging, always run
-    			include_once $core_path .'lib/Form_Processor.php';
-    			include_once $core_path .'lib/Email_Handler.php';
-    			include_once $core_path .'lib/Field_Validator.php';
-    			include_once $core_path .'lib/CM_API.php';
-    			include_once $core_path .'lib/Slack_Client.php';
+    			// include_once $core_path .'lib/Form_Processor.php';
+    			// include_once $core_path .'lib/Email_Handler.php';
+    			// include_once $core_path .'lib/Field_Validator.php';
+    			// include_once $core_path .'lib/CM_API.php';
+    			// include_once $core_path .'lib/Slack_Client.php';
 
                 //grab system settings
                 $bot_name = $modx->getOption('formhandler.slack_bot_name',null);

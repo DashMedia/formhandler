@@ -23,12 +23,12 @@
         "campaignmonitor/createsend-php": "~4.0"
     },
     "autoload": {
-        "classmap":["model/"]
+        "classmap":["model/", "lib/"]
     },
     "extra": {
         "package_name": "FormHandler",
         "namespace": "formhandler",
-        "version": "0.2.10",
+        "version": "0.2.11",
         "release": "beta",
         "category":"Form Handler"
     }
