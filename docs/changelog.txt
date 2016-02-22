@@ -1,5 +1,14 @@
 Changelog for FormHandler
 
+FormHandler 0.2.12-beta
+---------------------------------
+- fix for storing field values in campaign monoitor custom fields that are not the default type
+	- you can now create a custom field in CM of the type you want and thing shuld just work
+
+FormHandler 0.2.11-beta
+---------------------------------
+- support Email destinaion input field to send to a specifiec email address based on form input, as opposed to a single possible input
+
 FormHandler 0.2.10-beta
 ---------------------------------
 - fix for adding values to multiselectmany boxes

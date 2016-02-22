@@ -20,6 +20,13 @@ Storing Variables in CM
 
 Add the variables to the fh_cm_variables_to_store tv on the page which the from_page varible is pointing to. These values will be stored in CM as Text fields.
 
+You may create the field in Campaign Monitor field (note the name must match the field name exactly) and the created field type will be used instead of the basic text field type
+
+Selecting send to address based on form value
+-----------------------
+
+Add a Email Destination input type to the form containing all your options
+
 Sending via Postmark
 -----------------------
 
