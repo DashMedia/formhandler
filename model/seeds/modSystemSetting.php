@@ -25,14 +25,28 @@ return array(
 		'value'		=>     '',
 		'xtype'		=>     'textfield',
 		'namespace' => 'formhandler',
-		'area' 		=> 'formhandler:subscriptions'
+		'area' 		=> 'formhandler:campaignmonitor'
 	),
 	array(
 	    'key'  		=>     'formhandler.cm_list_id',
 		'value'		=>     '',
 		'xtype'		=>     'textfield',
 		'namespace' => 'formhandler',
-		'area' 		=> 'formhandler:subscriptions'
+		'area' 		=> 'formhandler:campaignmonitor'
+	),
+	array(
+	    'key'  		=>     'formhandler.cm_default_template',
+		'value'		=>     '',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:campaignmonitor'
+	),
+	array(
+	    'key'  		=>     'formhandler.default_send_type',
+		'value'		=>     'campaignmonitor',
+		'xtype'		=>     'textfield',
+		'namespace' => 'formhandler',
+		'area' 		=> 'formhandler:email'
 	),
 	array(
 	    'key'  		=>     'formhandler.send_email',

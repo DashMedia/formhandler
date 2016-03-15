@@ -26,13 +26,11 @@ switch ($modx->event->name) {
                 $channel = $modx->getOption('formhandler.slack_channel',null);
                 $slack_url = $modx->getOption('formhandler.slack_webhook_url',null);
                 $channel = $modx->getOption('formhandler.slack_channel',null);
-                $postmark_server_token = $modx->getOption('formhandler.postmark_token',null);
-                $postmark_sender = $modx->getOption('formhandler.postmark_sender',null);
+                // $postmark_server_token = $modx->getOption('formhandler.postmark_token',null);
+                // $postmark_sender = $modx->getOption('formhandler.postmark_sender',null);
 
                 //setup clients
                 $slack_client = new Slack_Client($bot_name, $channel,$slack_url);
-
-                $email_handler = new Email_Handler($modx->getOption('site_name'), $modx->getOption('site_url'), $postmark_sender, $postmark_server_token, $modx);
 
     			$form_processor = new Form_Processor($modx, $slack_client, $postmark_client, $email_handler);
 

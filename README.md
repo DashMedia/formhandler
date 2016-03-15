@@ -22,9 +22,13 @@ You may create the field in Campaign Monitor field (note the name must match the
 
 Add a `Email Destination` input type to the form containing all your options
 
-##Sending via Postmark
+##Selecting mail send service
 
-If Postmark server token is included mail will be sent via the Postmark API's instead of the MODX mailer service
+System setting for `formhandler.default_send_type` defines which email send method is used by default
+
+###CampaignMonitor Transactional Emails
+
+All form fields are passed to CampaignMonitor along with a new `content` field which is formatted HTML of all fields
 
 ##Custom HTML Email Handling
 

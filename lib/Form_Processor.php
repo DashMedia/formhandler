@@ -16,12 +16,12 @@ class Form_Processor{
     private $email_handler;
     private $postmark_client;
 
-    public function __construct($modx, $slack_client, $postmark_client, $email_handler)
+    public function __construct($modx, $slack_client)
     {
         $this->modx = $modx;
         $this->slack_client = $slack_client;
-        $this->email_handler = $email_handler;
-        $this->postmark_client = $postmark_client;
+        // $this->email_handler = $email_handler;
+        // $this->postmark_client = $postmark_client;
         $this->fields = $_POST;
         $this->subscription_option = null;
         $this->store_in_session = null;
@@ -68,7 +68,9 @@ class Form_Processor{
         $subscribe = $this->modx->getOption('formhandler.subscribe', null, null);
         $cm_api_key = $this->modx->getOption('formhandler.cm_api_key', null, null);
         $cm_list_id = $this->modx->getOption('formhandler.cm_list_id', null, null);
+        $cm_template_id = $this->modx->getOption('formhandler.cm_default_template', null, null);
         $to_address = $this->modx->getOption('formhandler.to_email', null, null);
+        $send_type = $this->modx->getOption('formhandler.default_send_type', null, null);
         $email_subject = $this->modx->getOption('formhandler.email_subject', null, null);
         $store_in_session = $this->modx->getOption('formhandler.store_in_session', null, null);
         $store_in_session = $this->modx->getOption('formhandler.cm_variables_to_store', null, null);
@@ -88,9 +90,15 @@ class Form_Processor{
         if(is_null($this->cm_list_id) && !is_null($cm_list_id)){
             $this->cm_list_id = $cm_list_id;
         }
+        if(is_null($this->cm_template_id) && !is_null($cm_template_id)){
+            $this->cm_template_id = $cm_template_id;
+        }
         if(is_null($this->to_address) && !is_null($to_address)){
             $this->to_address = $to_address;
         }
+        if(is_null($this->send_type) && !is_null($send_type)){
+            $this->send_type = $send_type;
+        } 
         if(is_null($this->email_subject) && !is_null($email_subject)){
             $this->email_subject = $email_subject;
         } 
@@ -160,7 +168,7 @@ class Form_Processor{
         }
         $tempDoc = $this->modx->getObject('modDocument', $id);
 
-        if(!is_null($tempDoc)){//we have valid a document
+        if(!is_null($tempDoc)){ //we have valid a document
             
             if(empty($this->subscription_option)){
             //if subscription option isn't set, we should check the template type and grab the pagetitle to use as the value
@@ -174,8 +182,10 @@ class Form_Processor{
             $send_email = $tempDoc->getTVValue('fh_send_email');
             $to_address = $tempDoc->getTVValue('fh_to_email');
             $to_field = $tempDoc->getTVValue('fh_to_address_field');
+            $send_type = $tempDoc->getTVValue('fh_send_type');
             $email_subject = $tempDoc->getTVValue('fh_email_subject');
             $cm_list_id = $tempDoc->getTVValue('fh_cm_list_id');
+            $cm_template_id = $tempDoc->getTVValue('fh_cm_template_id');
             $store_in_session = $tempDoc->getTVValue('fh_store_in_session');
             $cm_variables_to_store = $tempDoc->getTVValue('fh_cm_variables_to_store');
 
@@ -188,8 +198,14 @@ class Form_Processor{
             if(is_null($this->cm_list_id) && ($cm_list_id === '0' || $cm_list_id)){
                 $this->cm_list_id = $cm_list_id;
             }
+            if(is_null($this->cm_template_id) && ($cm_template_id === '0' || $cm_template_id)){
+                $this->cm_template_id = $cm_template_id;
+            }
             if(is_null($this->to_address) && ($to_address === '0' || $to_address)){
                 $this->to_address = $to_address;
+            }
+            if(is_null($this->send_type) && !empty($send_type)){
+                $this->send_type = $send_type;
             }
             if(is_null($this->email_subject) && ($email_subject === '0' || $email_subject)){
                 $this->email_subject = $email_subject;
@@ -244,10 +260,35 @@ class Form_Processor{
             $this->email_subject = 'Form submission from '.$this->modx->getOption('site_url');
         }
         /////////////////////////
-        //send postmark email
+        // send email
         /////////////////////////
         try {
-            $this->email_handler->sendMail($this->to_address,$this->email_subject, $this->fields);
+            $this->cleanFields($this->fields); // clean fields before we send
+            $content_generator = new Content_Generator($this->fields, $this->modx);
+
+            $email_handler = null;
+
+            switch ($this->send_type) {
+                case 'postmark':
+                    $email_handler = new Postmark_Send($this->modx);
+                    break;
+
+                case 'campaignmonitor':
+                    $email_handler = new CampaignMonitor_Send($this->modx);
+                    $email_handler->setTemplateId($this->cm_template_id);
+                    break;
+                
+                default:
+                    $email_handler = new Smtp_Send($this->modx);
+                    break;
+            }
+
+            $email_handler->setSubject($this->email_subject);
+            $email_handler->setFields($this->fields);
+            $email_handler->setHtmlContent($content_generator->getHtml());
+            $email_handler->setPlainContent($content_generator->getPlainText());
+            $email_handler->send($this->to_address, null);
+        
         } catch (Exception $e) {
             $this->slack_client->addAttachment('Variables',array(
                 'Function'=>'sendMail',
@@ -323,5 +364,23 @@ class Form_Processor{
     private function xhr()
     {
         return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? true : false;
+    }
+    private function cleanFields(&$fields)
+    {
+        unset($fields['formhandler']);
+        unset($fields['fh_2step']);
+        $originalCopy = $fields;
+        foreach ($originalCopy as $key => $value) {
+            $pretty_key = ucwords(str_replace('_', ' ', $key));
+
+            if(is_array($value)){ // recursive if value is an array
+                $this->cleanFields($fields[$key]);
+            }
+
+            if($pretty_key !== $key){
+                $offset = array_search($key,array_keys($fields));
+                $fields = array_merge(array_slice($fields,0,$offset),array($pretty_key => $fields[$key]),array_slice($fields,$offset+1));
+            }
+        }
     }
 }

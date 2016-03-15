@@ -1,26 +1,13 @@
 <?php
 
 
-use Postmark\PostmarkClient;
-use Postmark\Models\PostmarkException;
-
-class Postmark_Send implements Email_Send
+class Smtp_Send implements Email_Send
 {
-
-	private $site_name;
-	private $domain_name;
-	private $postmark_server_token;
-	private $postmark_client; 
 
 	public function __construct($modx)
 	{
-		$this->postmark_sender = $modx->getOption('formhandler.postmark_sender',null);
-		$this->postmark_server_token = $modx->getOption('formhandler.postmark_token',null);
-		$this->postmark_client = new PostmarkClient($this->postmark_server_token);
-
 		$this->modx = $modx;
 	}
-
 	public function setSubject($subject){
 		$this->subject = $subject;
 	}
@@ -44,15 +31,32 @@ class Postmark_Send implements Email_Send
 		$this->rendered_text_only = $content;
 	}
 	public function send($to, $from)
-	{
+	{	
+		$from = $this->modx->getOption('formhandler.from_name', null, 'No Reply');
 
-		$postmark_send = $this;
+		if(empty($from)){
+			$from = $this->modx->getOption('formhandler.from_address', null, $from);
+		}
 
+		$email_handler = $this;
 		$this->modx->invokeEvent('OnFormHanderEmailRender', array(
-			'email_handler'=> $postmark_send
+			'email_handler'=> $email_handler
 			));
 
-		$this->postmark_client->sendEmail($this->postmark_sender, $to, $$this->subject, $this->rendered_html, $this->rendered_text_only);
+		$this->modx->getService('mail', 'mail.modPHPMailer');
+		
+		$mailer = $this->modx->mail;
 
+		$mailer->setHTML(true);
+		$mailer->set(modMail::MAIL_BODY, $this->rendered_html);
+		$mailer->set(modMail::MAIL_FROM, $from);
+		$mailer->set(modMail::MAIL_FROM_NAME, $from_name);
+		$mailer->set(modMail::MAIL_SENDER, $from);
+		$mailer->set(modMail::MAIL_SUBJECT, $this->subject);
+		$mailer->address('to', $to);
+		$mailer->address('reply-to', $from);
+		if (!$mailer->send()) {
+			throw new Exception("Mail not sent, error from mail.modPHPMailer");
+		}
 	}
 }

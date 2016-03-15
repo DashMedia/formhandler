@@ -1,5 +1,10 @@
 Changelog for FormHandler
 
+FormHandler 0.3.0-beta
+---------------------------------
+- Add Campaign Monitor Transactional emails as a send option
+- Switch to using a full email send type selection system
+
 FormHandler 0.2.12-beta
 ---------------------------------
 - fix for storing field values in campaign monoitor custom fields that are not the default type
