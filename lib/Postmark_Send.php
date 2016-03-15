@@ -4,7 +4,7 @@
 use Postmark\PostmarkClient;
 use Postmark\Models\PostmarkException;
 
-class Email_Handler
+class Postmark_Send
 {
 
 	private $site_name;
@@ -133,8 +133,6 @@ class Email_Handler
 			if($pretty_key !== $key){
 				$offset = array_search($key,array_keys($fields));
 				$fields = array_merge(array_slice($fields,0,$offset),array($pretty_key => $fields[$key]),array_slice($fields,$offset+1));
-				// $fields[$pretty_key] = $value;
-				// unset($fields[$key]);
 			}
 		}
 	}
@@ -176,18 +174,4 @@ class Email_Handler
 	  }
 	  return $returnVal;
 	}
-
-	// private function pageURL(){
-	// 	$pageURL = 'http';
-	// 	if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-	// 	$pageURL .= "://";
-	// 	if ($_SERVER["SERVER_PORT"] != "80") {
-	// 	    $pageURL .= $domain.":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-	// 	} else {
-	// 	    $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-	// 	}
-	// 	return $pageURL;
-	// }
-
-
 }
