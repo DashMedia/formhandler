@@ -118,10 +118,12 @@ class CM_API{
 			// update the current values array with the new values
 			if($value['DataType'] != CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTMANY){ //check if field already has a value, and replace it
 				$found = false;
-				foreach ($current_values as $current_key => &$current_value) {
-					if($current_value->Key == $value['FieldName']){
-						$found = true;
-						$current_value->Value = $value['Value'];
+				if(is_array($current_values)){
+					foreach ($current_values as &$current_value) {
+						if($current_value->Key == $value['FieldName']){
+							$found = true;
+							$current_value->Value = $value['Value'];
+						}
 					}
 				}
 

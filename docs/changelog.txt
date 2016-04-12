@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.3.1-beta
+---------------------------------
+- Add fixes based on tests from PHP 7 and MODX 2.5 rc2
+
 FormHandler 0.3.0-beta
 ---------------------------------
 - Add Campaign Monitor Transactional emails as a send option

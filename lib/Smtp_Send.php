@@ -32,7 +32,7 @@ class Smtp_Send implements Email_Send
 	}
 	public function send($to, $from)
 	{	
-		$from = $this->modx->getOption('formhandler.from_name', null, 'No Reply');
+		$from_name = $this->modx->getOption('formhandler.from_name', null, 'No Reply');
 
 		if(empty($from)){
 			$from = $this->modx->getOption('formhandler.from_address', null, $from);
@@ -56,7 +56,7 @@ class Smtp_Send implements Email_Send
 		$mailer->address('to', $to);
 		$mailer->address('reply-to', $from);
 		if (!$mailer->send()) {
-			throw new Exception("Mail not sent, error from mail.modPHPMailer");
+			throw new Exception("Mail not sent, error from mail.modPHPMailer: " . $mailer->mailer->ErrorInfo);
 		}
 	}
 }

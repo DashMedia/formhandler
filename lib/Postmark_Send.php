@@ -52,7 +52,7 @@ class Postmark_Send implements Email_Send
 			'email_handler'=> $postmark_send
 			));
 
-		$this->postmark_client->sendEmail($this->postmark_sender, $to, $$this->subject, $this->rendered_html, $this->rendered_text_only);
+		$this->postmark_client->sendEmail($this->postmark_sender, $to, $this->subject, $this->rendered_html, $this->rendered_text_only);
 
 	}
 }

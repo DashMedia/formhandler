@@ -43,7 +43,7 @@ return array(
 	),
 	array(
 	    'key'  		=>     'formhandler.default_send_type',
-		'value'		=>     'campaignmonitor',
+		'value'		=>     'smtp',
 		'xtype'		=>     'textfield',
 		'namespace' => 'formhandler',
 		'area' 		=> 'formhandler:email'
