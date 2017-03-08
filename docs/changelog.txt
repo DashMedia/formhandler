@@ -1,8 +1,12 @@
 Changelog for FormHandler
 
-FormHandler 0.3.4-beta
+FormHandler 0.3.5-beta
 ---------------------------------
 - Better support for using CM_API externally
+
+FormHandler 0.3.4-beta
+---------------------------------
+- add email_address field as the reply-to field by default when it's included
 
 FormHandler 0.3.3-beta
 ---------------------------------
