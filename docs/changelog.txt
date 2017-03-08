@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.3.4-beta
+---------------------------------
+- Better support for using CM_API externally
+
 FormHandler 0.3.3-beta
 ---------------------------------
 - Fix error when no valid transactional email id passed
@@ -65,7 +69,7 @@ FormHandler 0.2.2-beta
 FormHandler 0.2.1-beta
 ---------------------------------
 - Add OnFormHanderEmailRender system event
- 
+
 FormHandler 0.2.0-beta
 ---------------------------------
 - Add fallback to use modPHPMailer
