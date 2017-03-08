@@ -20,7 +20,7 @@ class CM_API{
 		$this->$api_key = $api_key;
 		$this->$list_id = $list_id;
 		$this->typesWithOptions = array(
-			'MultiSelectOne', 
+			'MultiSelectOne',
 			'MultiSelectMany'
 			);
 		//create subscribers_connection
@@ -40,7 +40,7 @@ class CM_API{
 		$this->email_address = $email_address;
 		// $this->subscription_option = $subscription_option;
 		// $this->custom_field_name = $subscription_field;
-		
+
 		$options = array(
 			'Name' => $this->name,
 			'EmailAddress' => $this->email_address,
@@ -55,7 +55,7 @@ class CM_API{
 			// we have an existing user, grab their custom fields
 			$current_custom_field_values = $user_details->CustomFields;
 		}
-		
+
 		if($this->process_custom_fields($current_custom_field_values)){
 			//returns true if there are custom fields associated with our subscriber
 			$options['CustomFields'] = $this->custom_fields;
@@ -67,8 +67,8 @@ class CM_API{
 		}
 	}
 
-	
-	public function process_custom_fields(&$current_values)
+
+	public function process_custom_fields(&$current_values = null)
 	{
 		$existing_custom_fields = $this->lists_connection->get_custom_fields()->response;
 
@@ -144,7 +144,7 @@ class CM_API{
 		return true;
 	}
 	/*
-	*	
+	*
 	*	Valid $type input values
 	*	CS_REST_CUSTOM_FIELD_TYPE_TEXT = Text
 	* 	CS_REST_CUSTOM_FIELD_TYPE_NUMBER = Number
@@ -152,11 +152,16 @@ class CM_API{
 	*   CS_REST_CUSTOM_FIELD_TYPE_MULTI_SELECTMANY = MultiSelectMany
 	*   CS_REST_CUSTOM_FIELD_TYPE_DATE = Date
 	*   CS_REST_CUSTOM_FIELD_TYPE_COUNTRY = Country
-	*   
+	*
 	*/
 	public function add_custom_field_value($key, $value, $type = CS_REST_CUSTOM_FIELD_TYPE_TEXT, $add = false)
 	{
 		$this->custom_fields[] = array('FieldName' => $key, 'Value' => $value, 'DataType' => $type);
+	}
+
+	public function get_custom_fields()
+	{
+		return $this->custom_fields;
 	}
 
 	private function get_subscriber()

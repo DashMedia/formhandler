@@ -1,5 +1,9 @@
 Changelog for FormHandler
 
+FormHandler 0.3.4-beta
+---------------------------------
+- Add default value for CM_API->process_custom_fields for supporting external usage
+
 FormHandler 0.3.1-beta
 ---------------------------------
 - Add fixes based on tests from PHP 7 and MODX 2.5 rc2
@@ -57,7 +61,7 @@ FormHandler 0.2.2-beta
 FormHandler 0.2.1-beta
 ---------------------------------
 - Add OnFormHanderEmailRender system event
- 
+
 FormHandler 0.2.0-beta
 ---------------------------------
 - Add fallback to use modPHPMailer
