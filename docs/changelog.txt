@@ -1,8 +1,12 @@
 Changelog for FormHandler
 
-FormHandler 0.3.4-beta
+FormHandler 0.3.3-beta
 ---------------------------------
-- Add default value for CM_API->process_custom_fields for supporting external usage
+- Fix error when no valid transactional email id passed
+
+FormHandler 0.3.2-beta
+---------------------------------
+- Pass "email_subject" field through to campaign monitor transactional emails
 
 FormHandler 0.3.1-beta
 ---------------------------------
@@ -61,7 +65,7 @@ FormHandler 0.2.2-beta
 FormHandler 0.2.1-beta
 ---------------------------------
 - Add OnFormHanderEmailRender system event
-
+ 
 FormHandler 0.2.0-beta
 ---------------------------------
 - Add fallback to use modPHPMailer

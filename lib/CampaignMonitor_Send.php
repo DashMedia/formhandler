@@ -37,11 +37,19 @@ class CampaignMonitor_Send implements Email_Send
 
 		$data = $this->fields;
 		$data['content'] = $this->rendered_html;
+
+		if(!empty($this->subject)){
+			$data['email_subject'] = $this->subject;
+		}
+		
 		$message = array(
 			'To' => $to,
 			'Data' => $data
 			);
 		$result = $cm_transactional_send->send($message);
+		if(!is_array($result->response)){
+			throw new Exception('CampaignMonitor_Send Error: '.$result->response->Message);
+		}
 		if($result->response[0]->Status != 'Accepted'){
 			throw new Exception('CampaignMonitor_Send Error: '.$result->response);
 		}
