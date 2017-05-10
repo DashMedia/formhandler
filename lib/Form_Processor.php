@@ -124,7 +124,7 @@ class Form_Processor{
         if(!empty($this->fields)){
             $this->validator = new Field_Validator($this->fields);
             $this->validator->field_rules = array(
-                'email_address'=>'email|required'
+                'email_address'=>'email'
                 );
             if($this->validator->is_valid()){
                 return true;
