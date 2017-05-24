@@ -1,5 +1,10 @@
 Changelog for FormHandler
 
+FormHandler 0.3.6-beta
+---------------------------------
+- Support for files on CM Transactional
+- Make email address optional
+
 FormHandler 0.3.5-beta
 ---------------------------------
 - Better support for using CM_API externally
