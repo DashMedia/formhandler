@@ -98,16 +98,16 @@ class Form_Processor{
         }
         if(is_null($this->send_type) && !is_null($send_type)){
             $this->send_type = $send_type;
-        } 
+        }
         if(is_null($this->email_subject) && !is_null($email_subject)){
             $this->email_subject = $email_subject;
-        } 
+        }
         if(is_null($this->store_in_session) && !is_null($store_in_session)){
             $this->store_in_session = $store_in_session;
-        } 
+        }
         if(is_null($this->cm_variables_to_store) && !is_null($cm_variables_to_store)){
             $this->cm_variables_to_store = $cm_variables_to_store;
-        }  
+        }
     }
 
     private function recursive_grab($id)
@@ -169,7 +169,7 @@ class Form_Processor{
         $tempDoc = $this->modx->getObject('modDocument', $id);
 
         if(!is_null($tempDoc)){ //we have valid a document
-            
+
             if(empty($this->subscription_option)){
             //if subscription option isn't set, we should check the template type and grab the pagetitle to use as the value
                 $template = $tempDoc->get('template');
@@ -277,7 +277,7 @@ class Form_Processor{
                     $email_handler = new CampaignMonitor_Send($this->modx);
                     $email_handler->setTemplateId($this->cm_template_id);
                     break;
-                
+
                 default:
                     $email_handler = new Smtp_Send($this->modx);
                     break;
@@ -288,7 +288,7 @@ class Form_Processor{
             $email_handler->setHtmlContent($content_generator->getHtml());
             $email_handler->setPlainContent($content_generator->getPlainText());
             $email_handler->send($this->to_address, null);
-        
+
         } catch (Exception $e) {
             $this->slack_client->addAttachment('Variables',array(
                 'Function'=>'sendMail',
@@ -300,13 +300,13 @@ class Form_Processor{
             $this->slack_client->report_error('Error sending email', $this->modx);
         }
     }
-   
+
     private function addSubscriber()
     {
         $custEmail = $this->fields['email_address'];
         $custName = $this->fields['name'];
         $fieldOption = $this->subscription_option;
-        
+
         if(is_null($custName)){
             $custName = '';
         }
@@ -317,7 +317,7 @@ class Form_Processor{
                 );
 
             $this->store_variables_in_cm($cm_api);
-            
+
             //if it's a two step form, set the custom field value
             if(!is_null($this->two_step_complete_flag)){
                 $value = ($this->two_step_complete_flag? 'Complete' : 'Incomplete');
