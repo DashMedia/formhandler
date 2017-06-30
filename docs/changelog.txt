@@ -1,5 +1,8 @@
 Changelog for FormHandler
 
+FormHandler 0.3.7-beta
+- Remove MAX_FILE_SIZE HTML flag on form submissions
+
 FormHandler 0.3.6-beta
 ---------------------------------
 - Support for files on CM Transactional

@@ -28,7 +28,7 @@
     "extra": {
         "package_name": "FormHandler",
         "namespace": "formhandler",
-        "version": "0.3.6",
+        "version": "0.3.7",
         "release": "beta",
         "category":"Form Handler"
     },

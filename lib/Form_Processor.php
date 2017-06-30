@@ -33,6 +33,8 @@ class Form_Processor{
         if(!empty($this->fields['from_page'])){
            $this->from_id =  $this->fields['from_page'];
            unset($this->fields['from_page']);
+           //remove the MAX_FILE_SIZE flag
+           unset($this->fields['MAX_FILE_SIZE']);
         }
 
         $this->recursive_grab($this->from_id); //pull values from the 'from' page and it's ancestors
