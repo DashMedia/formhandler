@@ -1,41 +1,39 @@
 {
-    "name": "DashMedia/formhandler",
-    "description": "",
-    "type": "modx-package",
-    "keywords": ["modx","formhandler"],
-    "homepage": "https://github.com/DashMedia/formhandler",
-    "license": "GPL-2.0+",
-    "authors": [
-        {
-            "name": "Jason Carney",
-            "email": "jason@dashmedia.com.au",
-            "homepage" : "https://dashmedia.com/"
-        }
-    ],
-    "support": {
-        "email": "jason@dashmedia.com.au",
-        "issues": "https://github.com/DashMedia/formhandler/issues",
-        "source": "https://github.com/DashMedia/formhandler.git"
-    },
-    "require": {
-        "php": ">=5.3",
-        "wildbit/postmark-php": "~1.0",
-        "campaignmonitor/createsend-php": "~4.0"
-    },
-    "autoload": {
-        "classmap":["model/", "lib/"]
-    },
-    "extra": {
-        "package_name": "FormHandler",
-        "namespace": "formhandler",
-        "version": "0.3.7",
-        "release": "beta",
-        "category":"Form Handler"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^5.7"
-    },
-    "scripts": {
-        "test": "phpunit"
-    }
+  "name": "DashMedia/formhandler",
+  "description": "",
+  "type": "modx-package",
+  "keywords": ["modx", "formhandler"],
+  "homepage": "https://github.com/DashMedia/formhandler",
+  "license": "GPL-2.0+",
+  "authors": [{
+    "name": "Jason Carney",
+    "email": "jason@dashmedia.com.au",
+    "homepage": "https://dashmedia.com/"
+  }],
+  "support": {
+    "email": "jason@dashmedia.com.au",
+    "issues": "https://github.com/DashMedia/formhandler/issues",
+    "source": "https://github.com/DashMedia/formhandler.git"
+  },
+  "require": {
+    "php": ">=5.3",
+    "wildbit/postmark-php": "~1.0",
+    "campaignmonitor/createsend-php": "~4.0"
+  },
+  "autoload": {
+    "classmap": ["model/", "lib/"]
+  },
+  "extra": {
+    "package_name": "FormHandler",
+    "namespace": "formhandler",
+    "version": "0.3.8",
+    "release": "beta",
+    "category": "Form Handler"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
 }

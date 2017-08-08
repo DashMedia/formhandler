@@ -1,5 +1,8 @@
 Changelog for FormHandler
 
+FormHandler 0.3.8-beta
+- run composer install to re-bundle dependancies
+
 FormHandler 0.3.7-beta
 - Remove MAX_FILE_SIZE HTML flag on form submissions
 
