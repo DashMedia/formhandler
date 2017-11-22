@@ -1,5 +1,8 @@
 Changelog for FormHandler
 
+FormHandler 0.3.9-beta
+- Fix for empty email address when email address not required
+
 FormHandler 0.3.8-beta
 - run composer install to re-bundle dependancies
 
