@@ -1,5 +1,12 @@
 Changelog for FormHandler
 
+FormHandler 0.4.0-beta
+- PHP 7.x compatibility
+- Update "wildbit/postmark-php" to "~2.6"
+- Update "campaignmonitor/createsend-php" to "~5.1"
+- Fix some (modDocument) which should instead be (modResource)
+- Add fallback so that $wrap_in_p can be an optional parameter
+
 FormHandler 0.3.9-beta
 - Fix for empty email address when email address not required
 
