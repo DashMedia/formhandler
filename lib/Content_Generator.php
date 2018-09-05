@@ -22,7 +22,7 @@ class Content_Generator
 	}
 
 	private function generate_content($field_tpl, $wrap_in_p)
-	{	
+	{
 		$rendered_fields = "";
 		foreach ($this->fields as $key => $value) {
 			$rendered_fields .= $this->field_html($key,$value,3,$field_tpl,$wrap_in_p);
@@ -30,7 +30,7 @@ class Content_Generator
 		return $rendered_fields;
 	}
 
-	private function field_html($heading, $value, $heading_level, $field_tpl,$wrap_in_p)
+	private function field_html($heading, $value, $heading_level, $field_tpl,$wrap_in_p = true)
 	{
 		$return_html = "";
 		if(empty($value)){ // return empty if value is blank
