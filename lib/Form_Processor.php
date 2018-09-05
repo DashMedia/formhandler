@@ -115,7 +115,7 @@ class Form_Processor{
     private function recursive_grab($id)
     {
         if($id > 0){
-            $tempDoc = $this->modx->getObject('modDocument',$id);
+            $tempDoc = $this->modx->getObject('modResource',$id);
             $this->getValuesFromDoc($id);
             $this->recursive_grab($tempDoc->get('parent'));
         }
@@ -125,7 +125,7 @@ class Form_Processor{
     {
         if(!empty($this->fields)){
             $this->validator = new Field_Validator($this->fields);
-            
+
             // if email_address provided, check it's valid
             if(!empty($this->fields['email_address'])){
               $this->validator->field_rules = array(
@@ -173,7 +173,7 @@ class Form_Processor{
         if(empty($id)){
             return false;
         }
-        $tempDoc = $this->modx->getObject('modDocument', $id);
+        $tempDoc = $this->modx->getObject('modResource', $id);
 
         if(!is_null($tempDoc)){ //we have valid a document
 
