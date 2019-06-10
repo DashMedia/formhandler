@@ -38,8 +38,8 @@ All form fields are passed to CampaignMonitor along with a new `content` field w
 - `$email_handler->rendered_html`: contents of HTML which is going to be sent, you can modify this to send somthing different
 - `$email_handler->rendered_text_only`: plain text version of email, you can modify this to send somthing different
 
-Author: Jason Carney (jaycarney), Jonathan Haslett (jonathanhaslett_
-Copyright 2015 - 2018
+Author: Jason Carney (jaycarney), Jonathan Haslett (jonathanhaslett), Aayush Sapkota (aayushsapkota)
+Copyright 2015 - 2019
 
 Official Documentation: https://github.com/DashMedia/formhandler
 
