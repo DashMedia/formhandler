@@ -1,19 +1,27 @@
-Changelog for FormHandler
+# Changelog for FormHandler
 
-FormHandler 0.4.0-beta
+## FormHandler 0.4.1-beta
+
+- Casting the custom-feilds variable into an array in CM_API in case its empty or not valid the loop doesnot process it
+
+## FormHandler 0.4.0-beta
+
 - PHP 7.x compatibility
 - Update "wildbit/postmark-php" to "~2.6"
 - Update "campaignmonitor/createsend-php" to "~5.1"
 - Fix some (modDocument) which should instead be (modResource)
 - Add fallback so that $wrap_in_p can be an optional parameter
 
-FormHandler 0.3.9-beta
+## FormHandler 0.3.9-beta
+
 - Fix for empty email address when email address not required
 
-FormHandler 0.3.8-beta
+## FormHandler 0.3.8-beta
+
 - run composer install to re-bundle dependancies
 
-FormHandler 0.3.7-beta
+## FormHandler 0.3.7-beta
+
 - Remove MAX_FILE_SIZE HTML flag on form submissions
 
 FormHandler 0.3.6-beta

@@ -11,8 +11,12 @@
       "homepage": "https://github.com/JayCarney/"
     },
     {
-      "name": "jonathanhaslett",
-      "homepage" : "https://github.com/joanthanhaslett"
+      "name": "Jonathan Haslett",
+      "homepage" : "https://github.com/jonathanhaslett"
+    },
+    {
+      "name": "Aayush Sapkota",
+      "homepage": "https://github.com/aayushsapkota"
     }
   ],
   "support": {
@@ -31,7 +35,7 @@
   "extra": {
     "package_name": "FormHandler",
     "namespace": "formhandler",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "release": "beta",
     "category": "Form Handler",
     "docs_path" : "docs/",
